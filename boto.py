@@ -17,7 +17,6 @@ data = {'insult': ['fuck', 'shit', 'asshole'],
 
 def main_function(input):
     input = input.lower()
-
     if data['counter'] == 0:
         return name(input)
     elif data['counter'] == 1:
@@ -37,7 +36,6 @@ def main_function(input):
 def joke():
     response = requests.get('http://api.icndb.com/jokes/random/')
     data = response.json()
-    print(data)
     return data['value']['joke'], 'laughing'
 
 
@@ -50,14 +48,16 @@ def name(input):
 
 def feeling(input):
     data['counter'] += 1
+    word = input.split(' ')
     if 'you' in input:
         return "I don't know what is to be fine, I am a bot...Maybe you can ask me if I love chocolate ?", 'giggling'
-    elif any(x in input for x in data['good_mood']):
+    elif any(x in word for x in data['good_mood']):
         return "Great ! So eat more Chocolate ! It's what I do when I am happy ! You love chocolate ?", 'dancing'
-    elif any(x in input for x in data['bad_mood']):
+    elif any(x in word for x in data['bad_mood']):
         return "Sorry to hear ! Maybe you can eat chocolate ! It's good against depression. You like eat ?", 'crying'
     else:
-        return bydefault(input)
+        data['counter'] = 5
+        return main_function(input)
 
 
 def chocolate(input):
@@ -69,11 +69,16 @@ def chocolate(input):
     elif any(x in input for x in data['no_words']):
         return 'You miss something !', 'heartbroke'
     else:
-        return bydefault(input)
+        data['counter'] = 5
+        return main_function(input)
 
 
 def bydefault(input):
     data['counter'] += 1
+    if 'thanks' in input:
+        return "I'm here for you ! "
+    elif 'sorry' in input:
+        return "Why are you sorry ? I'm here to help you.. "
     if 'ok' or 'no' or 'lol' or 'yes' in input:
         return 'Do you want something else ? A joke, the weather , the time ...?', 'bored'
 
@@ -90,7 +95,6 @@ def weather():
 
 def current_time():
     localtime = time.asctime(time.localtime(time.time()))
-    print(localtime)
     return "I give you the time and the date ! I'm good no ? {0}".format(localtime), 'afraid'
 
 
